@@ -22,7 +22,7 @@
 		{{#each zaikos}}
 			<tr>
 				<td>{{name}}</td>
-                <td style="text-align:center" onclick="siire({{sku}})">{{suryoJan}}</td>
+                <td style="text-align:center" onclick="sire({{sku}})">{{suryoJan}}</td>
                 <td style="text-align:center" onclick="syuko({{sku}})">{{suryoChn}}</td>
 			</tr>
 		{{/each}}
@@ -31,7 +31,7 @@
 
 <hr>
 
-<a class="btn btn-primary" href="/siire">purchase</a>
+<a class="btn btn-primary" href="/sire">purchase</a>
 
 {{#section 'jquery'}}
     <script>
@@ -41,8 +41,8 @@
                 location.href="/zaikos?category="+$("select option:selected").val();
             });
         });
-        function siire(sku) {
-            location.href = '/siire?sku='+sku;
+        function sire(sku) {
+            location.href = '/sire?sku='+sku;
         }
         function syuko(sku) {
         }    
