@@ -1,0 +1,68 @@
+<h1>Purchase</h1>
+
+<hr>
+
+<form class="form-horizontal PurchaseFomr" role="form"action="/siire" method="POST">
+	<input type="hidden" name="continue" id="continue">
+    <div class="form-group">
+        <label for="fieldSKU" class="col-sm-4 control-label">SKU ※</label>
+        <div class="col-sm-1">
+            <input type="number" class="form-control" id="fieldSKU" name="sku" {{#if goods.sku}} value="{{goods.sku}}" {{/if}} required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="fieldName" class="col-sm-4 control-label">Name ※</label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="fieldName" name="name" {{#if goods.name}} value="{{goods.name}}" {{/if}} required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="fieldCategory" class="col-sm-4 control-label">Category ※</label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="fieldCategory" name="category" {{#if goods.category}} value="{{goods.category}}" {{/if}} required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="fieldDescription" class="col-sm-4 control-label">Description</label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="fieldDescription" name="description" {{#if goods.description}} value="{{goods.description}}" {{/if}} >
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="fieldImgPath" class="col-sm-4 control-label">imgPath</label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="fieldImgPath" name="imgPath" {{#if goods.imgPath}} value="{{goods.imgPath}}" {{/if}} >
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="fieldQuantity" class="col-sm-4 control-label">Quantity ※</label>
+        <div class="col-sm-1">
+            <input type="number" class="form-control" id="fieldQuantity" name="quantity" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="fieldPrice" class="col-sm-4 control-label">Price ※</label>
+        <div class="col-sm-1">
+            <input type="number" class="form-control" id="fieldPrice" name="price" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4">
+            <button type="submit" class="hidden submitSire"></button>
+            <button class="btn btn-default" onclick="purchase('noc')">Purchase</button>
+            <button class="btn btn-default" onclick="purchase('con')">Purchase And Continue</button>
+            <button class="btn btn-default" onclick="history.back();">Back</button>
+        </div>
+    </div>
+</form>
+
+{{#section 'jquery'}}
+    <script>
+        function purchase(con) {
+            if(con === 'con'){
+                $('#continue').val('continue');
+            }
+            $('.submitSire').trigger('click');
+        }
+    </script>
+{{/section}}
