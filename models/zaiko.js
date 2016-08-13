@@ -5,11 +5,10 @@ var zaikoSchema = mongoose.Schema({
     category: String,
     sku: String,
     description: String,
-    tags: [String],
     imgPath: String,
     suryoJan:Number,
-    suryoChn:Number,
-    delFlg:Boolean
+    suryoChn:{ type: Number, default: 0 },
+    delFlg:{ type: Boolean, default: false }
     });
 
 var Zaiko = mongoose.model('Zaiko', zaikoSchema);

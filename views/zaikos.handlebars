@@ -1,9 +1,50 @@
-<h1>Zaiko</h1>
-{{#each zaikos}}
-    <div class="zaiko">
-        <h3>{{name}}</h3>
-        <p>{{description}}</p>
-        <p>{{suryoJan}}</p>    
-        <p>{{suryoChn}}</p>            
-    </div>
-{{/each}}
+<h1>Stock</h1>
+<hr>
+{{#if categorys}}
+    <select name="categorys">
+        <option value="" ></option>
+        {{#select categorySd}}
+        {{#each categorys}}
+            <option value="{{this}}" >{{this}}</option>
+        {{/each}}
+        {{/select}}
+    </select>
+{{/if}}
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Goods</td>
+			<td>Quantity in Jan</td>
+            <td>Quantity in Chn</td>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each zaikos}}
+			<tr>
+				<td>{{name}}</td>
+                <td style="text-align:center" onclick="siire({{sku}})">{{suryoJan}}</td>
+                <td style="text-align:center" onclick="syuko({{sku}})">{{suryoChn}}</td>
+			</tr>
+		{{/each}}
+	</tbody>
+</table>
+
+<hr>
+
+<a class="btn btn-primary" href="/siire">purchase</a>
+
+{{#section 'jquery'}}
+    <script>
+        $(document).ready(function(){
+    
+            $("select").change(function(){
+                location.href="/zaikos?category="+$("select option:selected").val();
+            });
+        });
+        function siire(sku) {
+            location.href = '/siire?sku='+sku;
+        }
+        function syuko(sku) {
+        }    
+    </script>
+{{/section}}
