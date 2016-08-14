@@ -3,6 +3,7 @@
 <hr>
 
 <form class="form-horizontal PurchaseFomr" role="form"action="/sire" method="POST">
+    <input type="hidden" name="_csrf" value="{{_csrfToken}}">
 	<input type="hidden" name="continue" id="continue">
     <div class="form-group">
         <label for="fieldSKU" class="col-sm-4 control-label">SKU ※</label>
@@ -41,7 +42,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="fieldPrice" class="col-sm-4 control-label">Price ※</label>
+        <label for="fieldPrice" class="col-sm-4 control-label currency-label">Price({{currency}}) ※</label>
         <div class="col-sm-1">
             <input type="number" class="form-control" id="fieldPrice" name="price" required>
         </div>
@@ -51,7 +52,7 @@
             <button type="submit" class="hidden submitSire"></button>
             <button class="btn btn-default" onclick="purchase('noc')">Purchase</button>
             <button class="btn btn-default" onclick="purchase('con')">Purchase And Continue</button>
-            <button class="btn btn-default" onclick="history.back();">Back</button>
+            <a class="btn btn-default" onclick="location.href='/zaikos';">Back</a>
         </div>
     </div>
 </form>

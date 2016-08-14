@@ -35,6 +35,11 @@
 			<hr>
 
 			<footer>
+                <div>
+                    <a href="javascript:void(0);" class="currency {{currencyJPY}}" id="curJpy" onclick="setCurrency('JPY')" >JPY</a> |
+                    <a href="javascript:void(0);" class="currency {{currencyRMB}}" id="curRmb" onclick="setCurrency('RMB')" >RMB</a>
+                    <input type="hidden" name="csrf" id="csrf" value="{{_csrfToken}}">
+                </div>
 				<p>&copy; benlala 2016</p>
 			</footer>
 	    </div> <!-- /container -->        
@@ -42,6 +47,33 @@
         <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
         <script>window.jQuery || document.write('<script src="/vendor/js/jquery-2.1.1.min.js"><\/script>')</script>
     	{{{_sections.jquery}}}
+        <script>
+            function setCurrency(cur){
+                if(cur === 'JPY'){
+                    $('#curJpy').addClass("selected");
+                    $('#curRmb').removeClass("selected");
+                }else{
+                    $('#curJpy').removeClass("selected");
+                    $('#curRmb').addClass("selected");
+                }
+                var $curlab = $('.currency-label');
+                $.ajax({
+                    url:'/setcurrency/'+cur,
+                    type:'POST',
+                    data:{
+                        _csrf:$('#csrf').val()
+                    },
+                    dataType:'json',
+                    success:function(){
+                        if($curlab.html()) $curlab.html($curlab.html().replace(
+                            /(.*\().*(\).*)/,'$1' + cur + '$2'));
+                    }, 
+                    error:function(){
+                        location.href='/500';
+                    }
+                });
+            }
+        </script>
 
         <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
         <script src="/js/main.js"></script>

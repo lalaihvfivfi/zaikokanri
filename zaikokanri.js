@@ -116,12 +116,21 @@ switch (app.get('env')) {
         throw new Error('Unknown execution environment: ' + app.get('env'));
 }
 
+app.use(require('csurf')());
+app.use(function(req,res,next){
+    res.locals._csrfToken = req.csrfToken();
+    next();
+});
+
 // flash message middleware
 app.use(function (req, res, next) {
     // if there's a flash message, transfer
     // it to the context, then clear it
     res.locals.flash = req.session.flash;
     delete req.session.flash;
+    res.locals.currency = req.session.currency || 'JPY';
+    if(res.locals.currency === 'JPY') res.locals.currencyJPY = 'selected';
+    if(res.locals.currency === 'RMB') res.locals.currencyRMB = 'selected';    
     next();
 });
 

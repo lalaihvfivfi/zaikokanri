@@ -7,5 +7,5 @@ module.exports = function(app){
 	app.get('/sire', main.sire);
 	app.post('/sire', main.sirepost);
 	app.get('/zaikos', main.zaikos);
-
+	app.post('/setCurrency/:currency', main.setCurrency);
 };

@@ -75,3 +75,8 @@ exports.zaikos = function(req,res,next){
     });
 };
 
+exports.setCurrency = function(req,res){
+    req.session.currency = req.params.currency;
+    res.send({ success: true });
+};
+
