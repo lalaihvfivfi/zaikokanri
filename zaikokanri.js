@@ -141,6 +141,18 @@ app.use(function (req, res, next) {
     next();
 });
 
+// authentication
+var auth = require('./lib/auth.js')(app, {
+	baseUrl: process.env.BASE_URL,
+	providers: credentials.authProviders,
+	successRedirect: '/zaikos',
+	failureRedirect: '/Login',
+});
+// auth.init() links in Passport middleware:
+auth.init();
+
+// now we can specify our auth routes:
+auth.registerRoutes();
 
 // add routes
 require('./routes.js')(app);

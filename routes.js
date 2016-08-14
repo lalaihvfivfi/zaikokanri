@@ -1,11 +1,19 @@
 var main = require('./handlers/main.js');
 
-module.exports = function(app){
+module.exports = function (app) {
+
+	// authorization helpers
+	function customerOnly(req, res, next) {
+		if (req.user && req.user.role === 'customer') return next();
+		// we want customer-only pages to know they need to logon
+		res.redirect(303, '/Login');
+	}
 
 	// miscellaneous routes
 	app.get('/', main.home);
-	app.get('/sire', main.sire);
+	app.get('/sire', customerOnly, main.sire);
 	app.post('/sire', main.sirepost);
-	app.get('/zaikos', main.zaikos);
+	app.get('/zaikos', customerOnly, main.zaikos);
 	app.post('/setCurrency/:currency', main.setCurrency);
+	
 };

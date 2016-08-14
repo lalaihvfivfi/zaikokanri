@@ -19,6 +19,8 @@
     "express3-handlebars": "^0.5.2",
     "mongoose": "^4.5.8",
     "morgan": "^1.7.0",
+    "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
     "session-mongoose": "^0.5.2"
   }
 }
