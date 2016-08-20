@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),Schema = mongoose.Schema;
 
 var zaikoSchema = mongoose.Schema({
     name: String,
@@ -8,6 +8,8 @@ var zaikoSchema = mongoose.Schema({
     imgPath: String,
     suryoJan:Number,
     suryoChn:{ type: Number, default: 0 },
+    suryoTrans:{ type: Number, default: 0 },
+    purchases:[{type: Schema.Types.ObjectId, ref:'Purchase'}],
     delFlg:{ type: Boolean, default: false }
     });
 

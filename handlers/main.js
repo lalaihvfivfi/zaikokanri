@@ -1,11 +1,12 @@
 var Zaiko = require('../models/zaiko.js');
+var Purchase = require('../models/purchase.js');
 
 exports.home = function (req, res) {
-	res.render('home');
+    res.render('home');
 };
 
 exports.sire = function (req, res, next) {
-	if (req.query.sku == null) {
+    if (req.query.sku == null) {
         return res.render('sire');
     }
     Zaiko.findOne({ sku: req.query.sku }, function (err, zaiko) {
@@ -23,15 +24,16 @@ exports.sire = function (req, res, next) {
     });
 };
 
-exports.sirepost = function (req, res ,next) {
-	Zaiko.findOne({ sku: req.body.sku }, function (err, zaiko) {
+exports.sirepost = function (req, res, next) {
+    Zaiko.findOne({ sku: req.body.sku }, function (err, zaiko) {
         if (err) return next(err);
+                
         var quantity = parseInt(req.body.quantity);
         if (zaiko) {
             zaiko.suryoJan = zaiko.suryoJan + quantity;
-            zaiko.save();
+            var promise = zaiko.save();
         } else {
-            new Zaiko({
+            var promise = new Zaiko({
                 sku: req.body.sku,
                 name: req.body.name,
                 category: req.body.category,
@@ -40,23 +42,34 @@ exports.sirepost = function (req, res ,next) {
                 suryoJan: quantity
             }).save();
         }
-
-        if (req.body.continue === 'continue') {
-            return res.redirect(303, '/sire');
-        } else {
-            return res.redirect(303, '/zaikos');
-        }
+        promise.then(function(zaiko){
+            new Purchase({
+                _goods: zaiko._id,
+                price: req.body.price,
+                currency: req.session.currency || 'JPY'
+            }).save(function(err){
+                if (err) return next(err);
+                if (req.body.continue === 'continue') {
+                    return res.redirect(303, '/sire');
+                } else {
+                    return res.redirect(303, '/zaikos');
+                }                  
+            });
+        });
     });
-};
+};  
 
-exports.zaikos = function(req,res,next){
-	var categorySd = req.query.category;
+exports.zaikos = function (req, res, next) {
+    var categorySd = req.query.category;
+    var nameSearch = req.query.nameSearch;
+    var sortCol = req.query.sortCol;    
     var criteria = { delFlg: false };
-    if (categorySd) criteria.category = categorySd;
+    if (categorySd) criteria.category = categorySd;  
+    if (nameSearch) criteria.name = new RegExp("\.\*" + nameSearch + "\.\*","i") ;
     Zaiko.find({ delFlg: false }).distinct("category").exec(function (err, categorys) {
-		if(err) return next(err);
-        Zaiko.find(criteria).sort({ suryoJan: -1, suryoChn: -1, name: 1 }).exec(function (err, zaikos) {
-			if(err) return next(err);
+        if (err) return next(err);
+        Zaiko.find(criteria).sort(sortCol).exec(function (err, zaikos) {
+            if (err) return next(err);
             var context = {
                 zaikos: zaikos.map(function (zaiko) {
                     return {
@@ -68,15 +81,38 @@ exports.zaikos = function(req,res,next){
                     };
                 }),
                 categorys: categorys,
-                categorySd: categorySd
+                categorySd: categorySd,
+                nameSearch: nameSearch
             };
             res.render('zaikos', context);
         });
     });
 };
 
-exports.setCurrency = function(req,res){
+exports.setCurrency = function (req, res) {
     req.session.currency = req.params.currency;
     res.send({ success: true });
 };
 
+exports.sirerireki = function (req, res, next) {
+        var dateStart = req.query.DateStart;
+        var nameSearch = req.query.nameSearch;
+        var dateEnd = req.query.DateEnd;
+        var criteria = {};
+        if (nameSearch) criteria.name = new RegExp("\.\*" + nameSearch + "\.\*", "i"); 
+        if (dateStart) criteria.purchaseDate = { $gt : dateStart};
+        if (dateEnd) criteria.purchaseDate = { $lt : dateEnd};
+        Purchase.find(criteria).populate("_goods").exec(function (err, purchases){
+            if (err) return next(err);
+            var context = {
+                purchases: purchases.map(function (purchase) {
+                    return {
+                        goods: purchase._goods.name,
+                        purchaseDate: purchase.purchaseDateYYYYMMDD,
+                        price: purchase.priceWithCurrency,
+                    };
+                }),
+            };
+            res.render('sirerireki', context);
+         });
+};

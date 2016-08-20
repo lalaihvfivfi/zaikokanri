@@ -1,8 +1,14 @@
 <h1>Stock</h1>
 <hr>
+<div>
+<label for="fieldNameSearch" >Goods : </label>
+<input type="text" id="fieldNameSearch" name="NameSearch" >
+<button class="btn btn-primary btn-sm" onclick="nameSearchf()">Search</button>
+</div>
 {{#if categorys}}
+    <label for="fieldcategorys">Categorys : </label>
     <select name="categorys">
-        <option value="" ></option>
+        <option value="" >ALL</option>
         {{#select categorySd}}
         {{#each categorys}}
             <option value="{{.}}" >{{.}}</option>
@@ -10,12 +16,15 @@
         {{/select}}
     </select>
 {{/if}}
+
+<hr>
 <table class="table table-striped">
 	<thead>
 		<tr>
-			<td>Goods</td>
-			<td>Quantity in Jan</td>
-            <td>Quantity in Chn</td>
+			<td onclick="sort('name')">Goods</td>
+			<td onclick="sort('-suryoJan')">Qty in Jan</td>
+            <td onclick="sort('-suryoChn')">Qty in Chn</td>
+            <td onclick="sort('-suryoTrans')">Qty in Trans</td>
 		</tr>
 	</thead>
 	<tbody>
@@ -24,6 +33,7 @@
 				<td>{{name}}</td>
                 <td style="text-align:center" onclick="sire({{sku}})">{{suryoJan}}</td>
                 <td style="text-align:center" onclick="syuko({{sku}})">{{suryoChn}}</td>
+                <td style="text-align:center" onclick="syuko({{sku}})">{{suryoTrans}}</td>
 			</tr>
 		{{/each}}
 	</tbody>
@@ -31,7 +41,7 @@
 
 <hr>
 
-<a class="btn btn-primary" href="/sire">purchase</a>
+<a class="btn btn-primary" href="/sire" role="button">purchase</a>
 
 {{#section 'jquery'}}
     <script>
@@ -45,6 +55,12 @@
             location.href = '/sire?sku='+sku;
         }
         function syuko(sku) {
-        }    
+        }
+        function nameSearchf() {
+            location.href = "/zaikos?category="+$("select option:selected").val()+"&nameSearch="+$("#fieldNameSearch").val();
+        } 
+        function sort(col) {
+            location.href = "/zaikos?category="+$("select option:selected").val()+"&nameSearch="+$("#fieldNameSearch").val() + "&sortCol=" + col;
+        }     
     </script>
 {{/section}}

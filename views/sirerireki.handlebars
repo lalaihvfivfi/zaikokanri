@@ -1,0 +1,38 @@
+<h1>Purchase history</h1>
+<hr>
+<div>
+<label for="fieldNameSearch" >Goods : </label>
+<input type="text" id="fieldNameSearch" name="NameSearch" >
+</div>
+<div>
+<label for="fieldDateSearch" >Date : </label>
+<input type="text" id="fieldDateStart"> ～ <input type="text" id="fieldDateEnd">
+<button class="btn btn-primary btn-sm" onclick="SearchHf()">Search</button>
+</div>
+<hr>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Date</td>
+			<td>Goods</td>
+            <td>Price</td>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each purchases}}
+			<tr>
+				<td>{{purchaseDate}}</td>
+                <td>{{goods}}</td>
+                <td>{{price}}</td>
+			</tr>
+		{{/each}}
+	</tbody>
+</table>
+
+{{#section 'jquery'}}
+    <script>
+        function SearchHf() {
+            location.href = "/sirerireki?nameSearch="+$("#fieldNameSearch").val() + "&DateStart=" + $("#fieldDateStart").val() + "&DateEnd=" + $("#fieldDateEnd").val();
+        } 
+    </script>
+{{/section}}

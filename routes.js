@@ -15,5 +15,5 @@ module.exports = function (app) {
 	app.post('/sire', main.sirepost);
 	app.get('/zaikos', customerOnly, main.zaikos);
 	app.post('/setCurrency/:currency', main.setCurrency);
-	
+	app.get('/sirerireki', customerOnly, main.sirerireki);
 };
