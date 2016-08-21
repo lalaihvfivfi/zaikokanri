@@ -1,21 +1,28 @@
-<h1>Purchase history</h1>
+<h1>Purchase</h1>
 <hr>
+
+<label for="fieldNameSearch" class="col-xs-4 col-sm-4">Goods : </label>
+<input type="text" id="fieldNameSearch" name="NameSearch" placeholder="{{nameSearch}}">
 <div>
-<label for="fieldNameSearch" >Goods : </label>
-<input type="text" id="fieldNameSearch" name="NameSearch" >
+	<label for="fieldDateStart" class="col-xs-4 col-sm-4">DateStart : </label>
+	<input type="text" id="fieldDateStart" placeholder="{{dateStart}}">
 </div>
 <div>
-<label for="fieldDateSearch" >Date : </label>
-<input type="text" id="fieldDateStart"> ～ <input type="text" id="fieldDateEnd">
+	<label for="fieldDateEnd" class="col-xs-4 col-sm-4">DateEnd : </label>
+	<input type="text" id="fieldDateEnd" placeholder="{{dateEnd}}">	
+</div>
 <button class="btn btn-primary btn-sm" onclick="SearchHf()">Search</button>
-</div>
 <hr>
+
+<a class="btn btn-primary" href="/sire" role="button">purchase</a>
+
 <table class="table table-striped">
 	<thead>
 		<tr>
 			<td>Date</td>
 			<td>Goods</td>
-            <td>Price</td>
+            <td style="text-align:center">Price</td>
+			<td style="text-align:center">Quantity</td>
 		</tr>
 	</thead>
 	<tbody>
@@ -23,7 +30,8 @@
 			<tr>
 				<td>{{purchaseDate}}</td>
                 <td>{{goods}}</td>
-                <td>{{price}}</td>
+                <td style="text-align:right">{{price}}</td>
+				<td style="text-align:center">{{quantity}}</td>
 			</tr>
 		{{/each}}
 	</tbody>
@@ -32,7 +40,15 @@
 {{#section 'jquery'}}
     <script>
         function SearchHf() {
-            location.href = "/sirerireki?nameSearch="+$("#fieldNameSearch").val() + "&DateStart=" + $("#fieldDateStart").val() + "&DateEnd=" + $("#fieldDateEnd").val();
+				var now = new Date();
+				var tomorrow = new Date();
+    			tomorrow.setDate(tomorrow.getDate()+1);
+				var dateStart = new Date($("#fieldDateStart").val());
+				dateStart = isNaN(dateStart) ? now.getFullYear() + '/' + ('0' + (now.getMonth() + 1)).slice(-2) + '/01' : dateStart;
+				var dateEnd = new Date($("#fieldDateEnd").val());
+				dateEnd = isNaN(dateEnd) ? tomorrow.getFullYear() + '/' +  ('0' + (tomorrow.getMonth() + 1)).slice(-2) + '/' + tomorrow.getDate() : dateEnd;
+				
+				location.href = "/sirerireki?nameSearch="+$("#fieldNameSearch").val() + "&DateStart=" + $("#fieldDateStart").val() + "&DateEnd=" + $("#fieldDateEnd").val();
         } 
     </script>
 {{/section}}

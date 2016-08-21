@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
         <style>
             body {
+                padding-top: 20px;
                 padding-bottom: 20px;
             }
         </style>
@@ -21,14 +22,18 @@
     <body>
 
 	    <div class="container-fluid">
-			{{#if flash}}
+            <ul class="nav nav-tabs">
+                <li role="presentation" onclick="setActive('stocks')" class="{{currtabStocks}}"><a href="/zaikos">Stocks</a></li>
+                <li role="presentation" onclick="setActive('purchaseh')" class="{{currtabPurchase}}"><a href="/sirerireki">Purchase</a></li>
+                <li role="presentation"><a href="#">coming</a></li>
+            </ul>
+            {{#if flash}}
 				<div class="alert alert-dismissible alert-{{flash.type}}">
 					<button type="button" class="close" 
 						data-dismiss="alert" aria-hidden="true">&times;</button>
 					<strong>{{flash.intro}}</strong> {{{flash.message}}}
 				</div>
 			{{/if}}
-
 		    {{{body}}}
 
 			<hr>

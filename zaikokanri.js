@@ -20,7 +20,7 @@ var handlebars = require('express3-handlebars').create({
             return options.fn(this).replace(
                 new RegExp(' value=\"' + selected + '\"'),
                 '$& selected="selected"');
-        }
+        },
     }
 });
 app.engine('handlebars', handlebars.engine);
