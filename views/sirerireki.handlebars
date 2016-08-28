@@ -1,8 +1,6 @@
 <h1>Purchase</h1>
 <hr>
 
-<label for="fieldNameSearch" class="col-xs-4 col-sm-4">Goods : </label>
-<input type="text" id="fieldNameSearch" name="NameSearch" placeholder="{{nameSearch}}">
 <div>
 	<label for="fieldDateStart" class="col-xs-4 col-sm-4">DateStart : </label>
 	<input type="text" id="fieldDateStart" placeholder="{{dateStart}}">
@@ -27,7 +25,7 @@
 	</thead>
 	<tbody>
 		{{#each purchases}}
-			<tr>
+			<tr onclick="doModify('{{sku}}','{{id}}')">
 				<td>{{purchaseDate}}</td>
                 <td>{{goods}}</td>
                 <td style="text-align:right">{{price}}</td>
@@ -40,15 +38,17 @@
 {{#section 'jquery'}}
     <script>
         function SearchHf() {
-				var now = new Date();
 				var tomorrow = new Date();
     			tomorrow.setDate(tomorrow.getDate()+1);
 				var dateStart = new Date($("#fieldDateStart").val());
-				dateStart = isNaN(dateStart) ? now.getFullYear() + '/' + ('0' + (now.getMonth() + 1)).slice(-2) + '/01' : dateStart;
+				dateStart = isNaN(dateStart) ? firstDate(new Date()) : dateStart;
 				var dateEnd = new Date($("#fieldDateEnd").val());
-				dateEnd = isNaN(dateEnd) ? tomorrow.getFullYear() + '/' +  ('0' + (tomorrow.getMonth() + 1)).slice(-2) + '/' + tomorrow.getDate() : dateEnd;
+				dateEnd = isNaN(dateEnd) ? dateFormat(tomorrow) : dateEnd;
 				
-				location.href = "/sirerireki?nameSearch="+$("#fieldNameSearch").val() + "&DateStart=" + $("#fieldDateStart").val() + "&DateEnd=" + $("#fieldDateEnd").val();
+				location.href = "/sirerireki?DateStart=" + $("#fieldDateStart").val() + "&DateEnd=" + $("#fieldDateEnd").val();
+        } 
+		function doModify(sku,id) {				
+				location.href = "/sire?sku=" + sku + "&purchaseId=" + id;
         } 
     </script>
 {{/section}}

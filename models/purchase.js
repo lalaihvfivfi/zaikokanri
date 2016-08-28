@@ -4,6 +4,7 @@ var currencys = 'JPY RMB'.split(' ')
 
 var purchaseSchema = mongoose.Schema({
   _goods: { type: Schema.Types.ObjectId, ref: 'Zaiko' },
+  sku:String,
   price: { type: Number, min: 1 },
   quantity:{ type: Number, min: 1 },
   currency: { type: String, enum: currencys },

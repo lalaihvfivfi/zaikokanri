@@ -21,6 +21,13 @@ var handlebars = require('express3-handlebars').create({
                 new RegExp(' value=\"' + selected + '\"'),
                 '$& selected="selected"');
         },
+        ife: function (c1,c2, options) {
+            if(c1 === c2){
+                return options.fn(this);
+            }else{
+                return options.inverse(this);
+            }
+        },
     }
 });
 app.engine('handlebars', handlebars.engine);

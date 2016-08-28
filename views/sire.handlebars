@@ -5,53 +5,68 @@
 <form class="form-horizontal PurchaseFomr" role="form"action="/sire" method="POST">
     <input type="hidden" name="_csrf" value="{{_csrfToken}}">
 	<input type="hidden" name="continue" id="continue">
+    <input type="hidden" name="purchaseId" value="{{purchaseId}}">
     <div class="form-group">
         <label for="fieldSKU" class="col-sm-4 control-label">SKU ※</label>
         <div class="col-sm-4 col-md-4">
-            <input type="number" class="form-control" id="fieldSKU" name="sku" {{#if goods.sku}} value="{{goods.sku}}" {{/if}} >
+            <input type="number" class="form-control" id="fieldSKU" name="sku" {{#if goods.sku}} value="{{goods.sku}}" readonly="readonly"{{/if}} >
         </div>
     </div>
     <div class="form-group">
         <label for="fieldName" class="col-sm-4 control-label">Name ※</label>
         <div class="col-sm-4 col-md-4">
-            <input type="text" class="form-control" id="fieldName" name="name" {{#if goods.name}} value="{{goods.name}}" {{/if}} >
+            <input type="text" class="form-control" id="fieldName" name="name" {{#if goods.name}} value="{{goods.name}}" {{/if}}
+            {{#if goods.sku}} readonly="readonly"{{/if}}>
         </div>
     </div>
     <div class="form-group">
         <label for="fieldCategory" class="col-sm-4 control-label">Category ※</label>
         <div class="col-sm-4 col-md-4">
-            <input type="text" class="form-control" id="fieldCategory" name="category" {{#if goods.category}} value="{{goods.category}}" {{/if}} >
+            <input type="text" class="form-control" id="fieldCategory" name="category" {{#if goods.category}} value="{{goods.category}}" {{/if}} 
+            {{#if goods.sku}} readonly="readonly"{{/if}}>
         </div>
     </div>
     <div class="form-group">
         <label for="fieldDescription" class="col-sm-4 control-label">Description</label>
         <div class="col-sm-4 col-md-4">
-            <input type="text" class="form-control" id="fieldDescription" name="description" {{#if goods.description}} value="{{goods.description}}" {{/if}} >
+            <input type="text" class="form-control" id="fieldDescription" name="description" {{#if goods.description}} value="{{goods.description}}" {{/if}} 
+            {{#if goods.sku}} readonly="readonly"{{/if}}>
         </div>
     </div>
     <div class="form-group">
         <label for="fieldImgPath" class="col-sm-4 control-label">imgPath</label>
         <div class="col-sm-4 col-md-4">
-            <input type="text" class="form-control" id="fieldImgPath" name="imgPath" {{#if goods.imgPath}} value="{{goods.imgPath}}" {{/if}} >
+            <input type="text" class="form-control" id="fieldImgPath" name="imgPath" {{#if goods.imgPath}} value="{{goods.imgPath}}" {{/if}} 
+            {{#if goods.sku}} readonly="readonly"{{/if}}>
         </div>
     </div>
     <div class="form-group">
+        <label for="fieldDate" class="col-sm-4 control-label">Date</label>
+        <div class="col-sm-4 col-md-4">
+            <input type="text" class="form-control" id="fieldDate" name="date" {{#if goods.date}} value="{{goods.date}}" {{/if}} >
+        </div>
+    </div>    
+    <div class="form-group">
         <label for="fieldQuantity" class="col-sm-4 control-label">Quantity ※</label>
         <div class="col-sm-4 col-md-4">
-            <input type="number" class="form-control" id="fieldQuantity" name="quantity" >
+            <input type="number" class="form-control" id="fieldQuantity" name="quantity" {{#if goods.quantity}} value="{{goods.quantity}}" {{/if}}>
         </div>
     </div>
     <div class="form-group">
         <label for="fieldPrice" class="col-sm-4 control-label currency-label">Price({{currency}}) ※</label>
         <div class="col-sm-4 col-md-4">
-            <input type="number" class="form-control" id="fieldPrice" name="price" >
+            <input type="number" class="form-control" id="fieldPrice" name="price" {{#if goods.price}} value="{{goods.price}}" {{/if}}>
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 col-md-4 col-md-offset-4 col-sm-offset-4">
             <button type="submit" class="hidden submitSire"></button>
-            <a class="btn btn-primary btn-block" onclick="purchase('noc')">Purchase</a>
-            <a class="btn btn-primary btn-block" onclick="purchase('con')">Purchase And Continue</a>
+            {{#if purchaseId }}
+                <a class="btn btn-primary btn-block" onclick="purchase('noc')">Modify</a>
+            {{else}}
+                <a class="btn btn-primary btn-block" onclick="purchase('noc')">Purchase</a>
+                <a class="btn btn-primary btn-block" onclick="purchase('con')">Purchase And Continue</a>
+            {{/if}}
         </div>
     </div>
 </form>
@@ -61,6 +76,10 @@
 {{#section 'jquery'}}
     <script>
         function purchase(con) {
+            if($('#fieldDate').val() && isNaN(new Date($('#fieldDate').val()))) {
+                alert("Purchase Date error!");
+                return;
+            }
             if($('#fieldSKU').val() && $('#fieldName').val() && $('#fieldCategory').val() && $('#fieldQuantity').val() && $('#fieldPrice').val()){            
                 if(con === 'con'){
                     $('#continue').val('continue');
