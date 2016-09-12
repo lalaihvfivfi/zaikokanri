@@ -6,10 +6,13 @@ var zaikoSchema = mongoose.Schema({
     sku: String,
     description: String,
     imgPath: String,
-    suryoJan:Number,
-    suryoChn:{ type: Number, default: 0 },
-    suryoTrans:{ type: Number, default: 0 },
+    preSuryoJan:{ type: Number, default: 0 },
+    preSuryoChn:{ type: Number, default: 0 },
+    preSuryoTrans:{ type: Number, default: 0 },
+    currentDate: Date,
     purchases:[{type: Schema.Types.ObjectId, ref:'Purchase'}],
+    sells:[{type: Schema.Types.ObjectId, ref:'Sell'}],
+    transports:[{type: Schema.Types.ObjectId, ref:'Transport'}],
     delFlg:{ type: Boolean, default: false }
     });
 
