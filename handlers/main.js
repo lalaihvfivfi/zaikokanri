@@ -61,7 +61,8 @@ exports.sire = function (req, res, next) {
 };
 
 exports.sirepost = function (req, res, next) {
-    if (req.body.sku == "" || req.body.name == "" || req.body.category == "" || req.body.quantity == "" || req.body.price == "") {
+    if ((req.body.continue !== 'del') && 
+        (req.body.sku == "" || req.body.name == "" || req.body.category == "" || req.body.quantity == "" || req.body.price == "")) {
         req.session.flash = { type: 'danger', intro: 'please input the all field with ※' };
         return res.redirect(303, '/sire?sku=' + req.body.sku);
     }
@@ -76,12 +77,22 @@ exports.sirepost = function (req, res, next) {
                 req.session.flash = { type: 'danger', intro: 'error!' };
                 return res.redirect(500, '/500');
             }
-            purchase.purchaseDate = purchaseDate;
-            purchase.quantity = req.body.quantity;
-            purchase.price = req.body.price;
-            purchase.save(function (err, purchase) {
-                deferred.resolve();
-            });
+            if(req.body.continue === 'delete'){
+                Purchase.remove({ _id: purchaseId }, function (err, purchase){
+                    deferred.resolve();
+                });
+                Zaiko.findOne({sku: req.body.sku},function (err, zaiko){
+                    zaiko.purchases.splice(zaiko.purchases.lastIndexOf(purchaseId),1);
+                    zaiko.save();
+                });
+            } else {
+                purchase.purchaseDate = purchaseDate;
+                purchase.quantity = req.body.quantity;
+                purchase.price = req.body.price;
+                purchase.save(function (err, purchase) {
+                    deferred.resolve();
+                });
+            }
         });
         promises.push(deferred);
     } else {

@@ -63,6 +63,7 @@
             <button type="submit" class="hidden submitSire"></button>
             {{#if purchaseId }}
                 <a class="btn btn-primary btn-block" onclick="purchase('noc')">Modify</a>
+                <a class="btn btn-primary btn-block" onclick="purchase('del')">Delete</a>
             {{else}}
                 <a class="btn btn-primary btn-block" onclick="purchase('noc')">Purchase</a>
                 <a class="btn btn-primary btn-block" onclick="purchase('con')">Purchase And Continue</a>
@@ -79,6 +80,10 @@
             if($('#fieldDate').val() && isNaN(new Date($('#fieldDate').val()))) {
                 alert("Purchase Date error!");
                 return;
+            }
+            if(con === 'del'){
+                $('#continue').val('delete');
+                $('.submitSire').trigger('click');
             }
             if($('#fieldSKU').val() && $('#fieldName').val() && $('#fieldCategory').val() && $('#fieldQuantity').val() && $('#fieldPrice').val()){            
                 if(con === 'con'){
