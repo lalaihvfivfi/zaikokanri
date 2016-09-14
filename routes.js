@@ -16,4 +16,6 @@ module.exports = function (app) {
 	app.get('/zaikos', customerOnly, main.zaikos);
 	app.post('/setCurrency/:currency', main.setCurrency);
 	app.get('/sirerireki', customerOnly, main.sirerireki);
+	app.get('/transrireki', customerOnly, main.transrireki);
+	app.get('/transport', customerOnly, main.transport);
 };

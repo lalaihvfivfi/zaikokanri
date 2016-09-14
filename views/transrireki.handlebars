@@ -1,0 +1,60 @@
+<h1>Transport</h1>
+<hr>
+
+<div>
+	<label for="fieldDateStart" class="col-xs-4 col-sm-4">DateStart : </label>
+	<input type="text" id="fieldDateStart" placeholder="{{dateStart}}">
+</div>
+<div>
+	<label for="fieldDateEnd" class="col-xs-4 col-sm-4">DateEnd : </label>
+	<input type="text" id="fieldDateEnd" placeholder="{{dateEnd}}">	
+</div>
+<button class="btn btn-primary btn-sm" onclick="SearchHf()">Search</button>
+<hr>
+
+<a class="btn btn-primary" href="/transport" role="button">Transport</a>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Date</td>
+			<td>TransCode</td>
+            <td style="text-align:center">Cost</td>
+			<td style="text-align:center">Status</td>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each transports}}
+			<tr onclick="doModify('{{sku}}','{{id}}')">
+				<td>{{transportDate}}</td>
+                <td>{{transCode}}</td>
+                <td>{{Cost}}</td>
+				<td>
+					{{#ife Status "done"}}
+						"done"
+					{{else}}
+						<button onclick="transDone({{_id}})">done</button>
+					{{/ife}}
+				</td>
+			</tr>
+		{{/each}}
+	</tbody>
+</table>
+
+{{#section 'jquery'}}
+    <script>
+        function SearchHf() {
+				var tomorrow = new Date();
+    			tomorrow.setDate(tomorrow.getDate()+1);
+				var dateStart = new Date($("#fieldDateStart").val());
+				dateStart = isNaN(dateStart) ? firstDate(new Date()) : dateStart;
+				var dateEnd = new Date($("#fieldDateEnd").val());
+				dateEnd = isNaN(dateEnd) ? dateFormat(tomorrow) : dateEnd;
+				
+				location.href = "/transrireki?DateStart=" + $("#fieldDateStart").val() + "&DateEnd=" + $("#fieldDateEnd").val();
+        } 
+		function doModify(sku,id) {				
+				location.href = "/transport?sku=" + sku + "&purchaseId=" + id;
+        } 
+    </script>
+{{/section}}

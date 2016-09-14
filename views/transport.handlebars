@@ -1,0 +1,60 @@
+<h1>Transport</h1>
+<hr>
+<form class="form-horizontal TransportForm" role="form"action="/transport" method="POST">
+    <div>
+        <label for="fieldTransportCode">TransportCode : </label>
+        <input type="text" id="fieldTransportCode" name="TransportCode"">
+        <label for="fieldTransportWay">TransportWay : </label>
+        <input type="text" id="fieldTransportWay" name="TransportWay"">
+        <button class="btn btn-primary btn-sm" onclick="transport()">Transport</button>
+    </div>
+    <hr>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td></td>
+                <td>Goods</td>
+                <td>Qty<br>in Jan</td>
+                <td>-></td>
+                <td>Qty<br>in Trans</td>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each zaikos}}
+            <tr>
+                <td><input type='hidden' name='goodsId' value='{{_id}}' /></td>
+                <td>{{name}}</td>
+                <td>{{suryoJan}}</td>
+                <td>-></td>
+                <td><input type='number' name='transNum' value=0/></td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</form>
+
+<hr> {{#section 'jquery'}}
+<script>
+    function sire(sku) {
+        location.href = '/sire?sku='+sku;
+    }
+    function syuko(sku) {
+    }
+    function nameSearchf() {
+        location.href = "/zaikos?category="+$("select option:selected").val()+"&nameSearch="+$("#fieldNameSearch").val();
+    } 
+    function sort(col) {
+        location.href = "/zaikos?category="+$("select option:selected").val()+"&nameSearch="+$("#fieldNameSearch").val() + "&sortCol=" + col;
+    }
+    function doAction(action) {
+        var sku = $('#SKU').val();
+        switch(action){
+            case 'Purchase':
+                location.href = "/sire?sku=" + sku;
+                break;
+            case 'PurchaseHistory' :
+                location.href = "/sirerireki?sku=" + sku;
+                break;
+        }
+    }      
+</script> {{/section}}

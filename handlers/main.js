@@ -16,8 +16,7 @@ exports.home = function (req, res) {
 };
 
 exports.sire = function (req, res, next) {
-    res.locals.currtabStocks = "";
-    res.locals.currtabPurchase = "active";
+    res.locals.currtab = "purchasestab";
     var purchaseId = req.query.purchaseId || "";
     if (req.query.sku) {
         var zaikozyoho = Zaiko.findOne({ sku: req.query.sku });
@@ -61,7 +60,7 @@ exports.sire = function (req, res, next) {
 };
 
 exports.sirepost = function (req, res, next) {
-    if ((req.body.continue !== 'del') && 
+    if ((req.body.continue !== 'delete') && 
         (req.body.sku == "" || req.body.name == "" || req.body.category == "" || req.body.quantity == "" || req.body.price == "")) {
         req.session.flash = { type: 'danger', intro: 'please input the all field with ※' };
         return res.redirect(303, '/sire?sku=' + req.body.sku);
@@ -140,8 +139,7 @@ exports.sirepost = function (req, res, next) {
 };
 
 exports.zaikos = function (req, res, next) {
-    res.locals.currtabStocks = "active";
-    res.locals.currtabPurchase = "";
+    res.locals.currtab = "stockstab";
     var categorySd = req.query.category;
     var nameSearch = req.query.nameSearch;
     var sortCol = req.query.sortCol;
@@ -203,8 +201,7 @@ exports.setCurrency = function (req, res) {
 };
 
 exports.sirerireki = function (req, res, next) {
-    res.locals.currtabStocks = "";
-    res.locals.currtabPurchase = "active";
+    res.locals.currtab = "purchasestab";
     var sku = req.query.sku;
     var tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -230,5 +227,71 @@ exports.sirerireki = function (req, res, next) {
             dateEnd: dateEnd,
         };
         res.render('sirerireki', context);
+    });
+};
+
+exports.transrireki = function (req, res, next) {
+    res.locals.currtab = "transportstab";
+    var sku = req.query.sku;
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var dateStart = (req.query.DateStart && !isNaN(new date(req.query.DateStart))) ? req.query.DateStart : firstDate(new Date());
+    var dateEnd = (req.query.DateEnd && !isNaN(new date(req.query.DateEnd))) ? req.query.DateEnd : dateFormat(tomorrow);
+    var criteria = { purchaseDate: { $gte: dateStart, $lte: dateEnd } };
+    if (sku) criteria.sku = sku;
+
+    Transport.find(criteria).sort('-transportDate').exec(function (err, transports) {
+        if (err) return next(err);
+        var context = {
+            transports: transports.map(function (transport) {
+                return {
+                    id: transport._id,
+                    transCode: transport.name,
+                    transportDate: transport.transportDateYYYYMMDD,
+                    cost: transport.costWithCurrency,
+                    status: transport.transport,
+                };
+            }),
+            dateStart: dateStart,
+            dateEnd: dateEnd,
+        };
+        res.render('transrireki', context);
+    });
+};
+
+exports.transport = function (req, res, next) {
+    res.locals.currtab = "transportstab";
+    Zaiko.find({ delFlg: false }).populate('purchases transports','quantity').sort(sortCol).exec(function (err, zaikos) {
+        if (err) return next(err);
+
+        context.zaikos = zaikos.map(function (zaiko) {                    
+            var suryoJan = zaiko.preSuryoJan;
+            var suryoChn = zaiko.preSuryoChn;
+            var suryoTrans = zaiko.preSuryoTrans;
+            var suryoTransD = 0;
+            for(transport of zaiko.transports) {
+                if (transport.status == "done") {
+                    suryoTransD = suryoTransD + transport.quantity;
+                } else {
+                    suryoTrans = suryoTrans + transport.quantity;
+                }
+            }
+            for(purchase of zaiko.purchases) {
+                suryoJan = suryoJan + purchase.quantity;
+            }
+            for(sell of zaiko.sells) {
+                suryoChn = suryoChn - sell.quantity;
+            }
+
+            return {
+                sku: zaiko.sku,
+                name: zaiko.name,
+                description: zaiko.description,
+                suryoJan: suryoJan - suryoTrans - suryoTransD,
+                suryoChn: suryoChn + suryoTransD,
+                suryoTrans: suryoTrans
+            };
+        })
+        deferred2.resolve();
     });
 };

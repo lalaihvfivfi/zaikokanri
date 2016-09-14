@@ -10,7 +10,8 @@ var transportSchema = mongoose.Schema({
   currency: { type: String, enum: currencys },
   transportDate: { type: Date, default: Date.now },
   status : String,
-  transCode : String
+  transCode : String,
+  transWay : String
 });
 
 transportSchema.virtual('costWithCurrency').get(function () {

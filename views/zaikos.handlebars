@@ -17,57 +17,57 @@
         {{/each}}
         {{/select}}
     </select> {{/if}}
-    <div>
+</div>
 
-        <hr>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <td style="padding-left:20px;vertical-align: middle" onclick="sort('name')">Goods</td>
-                    <td style="text-align:center;vertical-align: middle" onclick="sort('-suryoJan')">Qty<br>in Jan</td>
-                    <td style="text-align:center;vertical-align: middle" onclick="sort('-suryoChn')">Qty<br>in Chn</td>
-                    <td style="text-align:center;vertical-align: middle" onclick="sort('-suryoTrans')">Qty<br>in Trans</td>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each zaikos}}
-                <tr>
-                    <td><button data-toggle="modal" data-target="#actionModal" data-whatever="{{sku}}" class="btn btn-link">{{name}}</button></td>
-                    <td style="text-align:center;vertical-align: middle" onclick="syuko({{sku}})">{{suryoJan}}</td>
-                    <td style="text-align:center;vertical-align: middle" onclick="syuko({{sku}})">{{suryoChn}}</td>
-                    <td style="text-align:center;vertical-align: middle" onclick="syuko({{sku}})">{{suryoTrans}}</td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+    <hr>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td style="padding-left:20px;vertical-align: middle" onclick="sort('name')">Goods</td>
+                <td style="text-align:center;vertical-align: middle" onclick="sort('-suryoJan')">Qty<br>in Jan</td>
+                <td style="text-align:center;vertical-align: middle" onclick="sort('-suryoChn')">Qty<br>in Chn</td>
+                <td style="text-align:center;vertical-align: middle" onclick="sort('-suryoTrans')">Qty<br>in Trans</td>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each zaikos}}
+            <tr>
+                <td><button data-toggle="modal" data-target="#actionModal" data-whatever="{{sku}}" class="btn btn-link">{{name}}</button></td>
+                <td style="text-align:center;vertical-align: middle" onclick="syuko({{sku}})">{{suryoJan}}</td>
+                <td style="text-align:center;vertical-align: middle" onclick="syuko({{sku}})">{{suryoChn}}</td>
+                <td style="text-align:center;vertical-align: middle" onclick="syuko({{sku}})">{{suryoTrans}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
 
-        <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="actionModalLabel">Action</h4>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" id="SKU" />
-                        <button type="button" class="btn btn-primary btn-block" onclick="doAction('Purchase')">Purchase</button>
-                        <button type="button" class="btn btn-primary btn-block" onclick="doAction('PurchaseHistory')">PurchaseHistory</button>
-                        <button type="button" class="btn btn-primary btn-block" onclick="doAction('TransportHistory')">TransportHistory</button>
-                        <button type="button" class="btn btn-primary btn-block" onclick="doAction('Sell')">Sell</button>
-                        <button type="button" class="btn btn-primary btn-block" onclick="doAction('SellHistory')">SellHistory</button>
-                        <button type="button" class="btn btn-primary btn-block" onclick="doAction('Others')">Others</button>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
+    <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="actionModalLabel">Action</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="SKU" />
+                    <button type="button" class="btn btn-primary btn-block" onclick="doAction('Purchase')">Purchase</button>
+                    <button type="button" class="btn btn-primary btn-block" onclick="doAction('PurchaseHistory')">PurchaseHistory</button>
+                    <button type="button" class="btn btn-primary btn-block" onclick="doAction('TransportHistory')">TransportHistory</button>
+                    <button type="button" class="btn btn-primary btn-block" onclick="doAction('Sell')">Sell</button>
+                    <button type="button" class="btn btn-primary btn-block" onclick="doAction('SellHistory')">SellHistory</button>
+                    <button type="button" class="btn btn-primary btn-block" onclick="doAction('Others')">Others</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <hr> {{#section 'jquery'}}
-        <script>
+    <hr> {{#section 'jquery'}}
+    <script>
         $(document).ready(function(){
-    
+
             $("select").change(function(){
                 location.href="/zaikos?category="+$("select option:selected").val();
             });
