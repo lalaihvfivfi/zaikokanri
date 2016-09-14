@@ -178,13 +178,18 @@ exports.zaikos = function (req, res, next) {
                 suryoChn = suryoChn - sell.quantity;
             }
 
+            zaiko.suryoJan = suryoJan - suryoTrans - suryoTransD;
+            zaiko.suryoChn = suryoChn + suryoTransD;
+            zaiko.suryoTrans = suryoTrans;
+            zaiko.save();
+
             return {
                 sku: zaiko.sku,
                 name: zaiko.name,
                 description: zaiko.description,
-                suryoJan: suryoJan - suryoTrans - suryoTransD,
-                suryoChn: suryoChn + suryoTransD,
-                suryoTrans: suryoTrans
+                suryoJan: zaiko.suryoJan,
+                suryoChn: zaiko.suryoChn,
+                suryoTrans: zaiko.suryoTrans
             };
         })
         deferred2.resolve();
