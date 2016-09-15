@@ -82,6 +82,7 @@ exports.sirepost = function (req, res, next) {
                 });
                 Zaiko.findOne({sku: req.body.sku},function (err, zaiko){
                     zaiko.purchases.splice(zaiko.purchases.lastIndexOf(purchaseId),1);
+                    zaiko.dirty = true;
                     zaiko.save();
                 });
             } else {
@@ -90,6 +91,10 @@ exports.sirepost = function (req, res, next) {
                 purchase.price = req.body.price;
                 purchase.save(function (err, purchase) {
                     deferred.resolve();
+                });
+                Zaiko.findOne({sku: req.body.sku},function (err, zaiko){
+                    zaiko.dirty = true;
+                    zaiko.save();
                 });
             }
         });
@@ -115,6 +120,7 @@ exports.sirepost = function (req, res, next) {
 
             if (zaiko) {
                 zaiko.purchases.push(purchase);
+                zaiko.dirty = true;
                 zaiko.save();
             } else {
                 new Zaiko({
@@ -123,6 +129,7 @@ exports.sirepost = function (req, res, next) {
                     category: req.body.category,
                     imgPath: req.body.imgPath,
                     description: req.body.description,
+                    suryoJan: req.body.quantity,
                     currentDate: dateFormat(new Date()),
                     purchases: [purchase._id]
                 }).save();
@@ -159,30 +166,32 @@ exports.zaikos = function (req, res, next) {
     Zaiko.find(criteria).populate('purchases transports sells','quantity').sort(sortCol).exec(function (err, zaikos) {
         if (err) return next(err);
 
-        context.zaikos = zaikos.map(function (zaiko) {                    
-            var suryoJan = zaiko.preSuryoJan;
-            var suryoChn = zaiko.preSuryoChn;
-            var suryoTrans = zaiko.preSuryoTrans;
-            var suryoTransD = 0;
-            for(transport of zaiko.transports) {
-                if (transport.status == "done") {
-                    suryoTransD = suryoTransD + transport.quantity;
-                } else {
-                    suryoTrans = suryoTrans + transport.quantity;
+        context.zaikos = zaikos.map(function (zaiko) { 
+            if (zaiko.dirty == true) {
+                var suryoJan = zaiko.preSuryoJan;
+                var suryoChn = zaiko.preSuryoChn;
+                var suryoTrans = zaiko.preSuryoTrans;
+                var suryoTransD = 0;
+                for (transport of zaiko.transports) {
+                    if (transport.status == "done") {
+                        suryoTransD = suryoTransD + transport.quantity;
+                    } else {
+                        suryoTrans = suryoTrans + transport.quantity;
+                    }
                 }
-            }
-            for(purchase of zaiko.purchases) {
-                suryoJan = suryoJan + purchase.quantity;
-            }
-            for(sell of zaiko.sells) {
-                suryoChn = suryoChn - sell.quantity;
-            }
+                for (purchase of zaiko.purchases) {
+                    suryoJan = suryoJan + purchase.quantity;
+                }
+                for (sell of zaiko.sells) {
+                    suryoChn = suryoChn - sell.quantity;
+                }
 
-            zaiko.suryoJan = suryoJan - suryoTrans - suryoTransD;
-            zaiko.suryoChn = suryoChn + suryoTransD;
-            zaiko.suryoTrans = suryoTrans;
-            zaiko.save();
-
+                zaiko.suryoJan = suryoJan - suryoTrans - suryoTransD;
+                zaiko.suryoChn = suryoChn + suryoTransD;
+                zaiko.suryoTrans = suryoTrans;
+                zaiko.dirty = false;
+                zaiko.save();
+            }
             return {
                 sku: zaiko.sku,
                 name: zaiko.name,

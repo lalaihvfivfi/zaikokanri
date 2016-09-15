@@ -13,6 +13,7 @@ var zaikoSchema = mongoose.Schema({
     preSuryoChn:{ type: Number, default: 0 },
     preSuryoTrans:{ type: Number, default: 0 },
     syncDate: Date,
+    dirty:{ type: Boolean, default: false },
     purchases:[{type: Schema.Types.ObjectId, ref:'Purchase'}],
     sells:[{type: Schema.Types.ObjectId, ref:'Sell'}],
     transports:[{type: Schema.Types.ObjectId, ref:'Transport'}],
