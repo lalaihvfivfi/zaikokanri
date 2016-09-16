@@ -275,37 +275,41 @@ exports.transrireki = function (req, res, next) {
 
 exports.transport = function (req, res, next) {
     res.locals.currtab = "transportstab";
-    Zaiko.find({ delFlg: false }).populate('purchases transports','quantity').sort(sortCol).exec(function (err, zaikos) {
+    Zaiko.find({ delFlg: false }).populate('purchases transports sells','quantity').sort("-suryoJan").exec(function (err, zaikos) {
         if (err) return next(err);
-
-        context.zaikos = zaikos.map(function (zaiko) {                    
-            var suryoJan = zaiko.preSuryoJan;
-            var suryoChn = zaiko.preSuryoChn;
-            var suryoTrans = zaiko.preSuryoTrans;
-            var suryoTransD = 0;
-            for(transport of zaiko.transports) {
-                if (transport.status == "done") {
-                    suryoTransD = suryoTransD + transport.quantity;
-                } else {
-                    suryoTrans = suryoTrans + transport.quantity;
+        var context = [];
+        context.zaikos = zaikos.map(function (zaiko) { 
+            if (zaiko.dirty == true) {
+                var suryoJan = zaiko.preSuryoJan;
+                var suryoChn = zaiko.preSuryoChn;
+                var suryoTrans = zaiko.preSuryoTrans;
+                var suryoTransD = 0;
+                for (transport of zaiko.transports) {
+                    if (transport.status == "done") {
+                        suryoTransD = suryoTransD + transport.quantity;
+                    } else {
+                        suryoTrans = suryoTrans + transport.quantity;
+                    }
                 }
-            }
-            for(purchase of zaiko.purchases) {
-                suryoJan = suryoJan + purchase.quantity;
-            }
-            for(sell of zaiko.sells) {
-                suryoChn = suryoChn - sell.quantity;
-            }
+                for (purchase of zaiko.purchases) {
+                    suryoJan = suryoJan + purchase.quantity;
+                }
+                for (sell of zaiko.sells) {
+                    suryoChn = suryoChn - sell.quantity;
+                }
 
+                zaiko.suryoJan = suryoJan - suryoTrans - suryoTransD;
+                zaiko.suryoChn = suryoChn + suryoTransD;
+                zaiko.suryoTrans = suryoTrans;
+                zaiko.dirty = false;
+                zaiko.save();
+            }
             return {
-                sku: zaiko.sku,
+                id: zaiko._id,
                 name: zaiko.name,
-                description: zaiko.description,
-                suryoJan: suryoJan - suryoTrans - suryoTransD,
-                suryoChn: suryoChn + suryoTransD,
-                suryoTrans: suryoTrans
+                suryoJan: zaiko.suryoJan,
             };
-        })
-        deferred2.resolve();
+        });
+        res.render('transport', context);
     });
 };
